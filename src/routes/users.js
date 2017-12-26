@@ -34,7 +34,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   user.create(req.body)
      .then(function(user) {
-       sendConfirmationEmail(userRecord);
+//       sendConfirmationEmail(userRecord);
        res.send(user);
      }) 
   });

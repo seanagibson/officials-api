@@ -1,10 +1,12 @@
 import sequelize from "sequelize";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import uniqueValidator from "validator";
+import {generateJWT} from '../utils/helper.js';
 const db = require('../db');
 const saltRounds = 10;
 // TODO: add uniqueness and email validations to email field
+
+
 
 const User = db.define('user', {
     email: {
@@ -67,13 +69,14 @@ const User = db.define('user', {
         default: false,
     },
     confirmationToken: {
-        type: sequelize.BOOLEAN,
+        type: sequelize.STRING,
         default: false,
     }
  });
+ 
 
 User.beforeCreate((user, options) => {
-     return bcrypt.hash(user.passwordHash, 10)
+    return bcrypt.hash(user.passwordHash, 10)
         .then(hash => {
             user.passwordHash = hash;
         })
@@ -81,6 +84,8 @@ User.beforeCreate((user, options) => {
             throw new Error();
     });
 });
+
+
 
 // These are things I need to translate to NODE
 

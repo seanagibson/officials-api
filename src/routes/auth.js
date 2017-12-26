@@ -2,6 +2,7 @@ import express from 'express';
 import eslint from "eslint";
 import bcrypt from "bcryptjs";
 import User from '../models/user';
+import {generateJWT} from '../utils/helper.js';
 
 const router = require('express').Router();
 process.env.JWT_SECRET="secretkey";
@@ -18,21 +19,11 @@ router.post("", (req, res) => {
                 .then( Res => {
                     console.log('Credentials are GOOD!!')
                     if (Res) {
-                        const token=jwt.sign(results[0],process.env.JWT_SECRET,{
-                            expiresIn:5000
-                        });
-                        res.json({
-                            status:true,
-                            token:token
-                        })
-                        res.status(200).json({data: {user:dbUser.dataValues.toAuthJSON()}})
+                        const token = generateJWT(dbUser.dataValues.email)
+                        res.status(200).json({token: token})
+                        console.log('Token Passed!!')
                     } else {
-                        res.json({
-                            status:false,                  
-                            message:"Email and password does not match"
-                        })
                         res.status(400).json({ errors: { global: "Invalid User Credentials" } });
-                        
                     }
                 })
             

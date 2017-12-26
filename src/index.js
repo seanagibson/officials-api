@@ -17,8 +17,6 @@ import fieldsRouter from './routes/fields';
 require('dotenv').config();
 const app = express();
 
-
-
 // logging middleware
 app.use(volleyball);
 // body parsing middleware
@@ -42,7 +40,7 @@ process.env.JWT_SECRET="secretkey";
 app.use('/secure-api',router);
 
 
-// validation middleware
+/* // validation middleware
 router.use(function(req,res,next){
     var token=req.body.token || req.headers['token'];
     if(token){
@@ -60,7 +58,7 @@ router.use(function(req,res,next){
 
 router.get('/home',function(req,res){
     res.send('Token Verified')
-})
+}) */
 
 app.get("/*", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
