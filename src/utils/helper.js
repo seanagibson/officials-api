@@ -1,12 +1,14 @@
-import jwt from "jsonwebtoken";
-
+require('dotenv').config();
+import jwt from 'jsonwebtoken';
 
 exports.generateJWT = function(email) {
   return jwt.sign(
     {
-      email: email
+      email: email,
     },
-    process.env.JWT_SECRET, {
-      expiresIn: '12h'
-    })
-  }
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '12h',
+    }
+  );
+};

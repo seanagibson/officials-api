@@ -1,11 +1,8 @@
-import express from 'express';
-import eslint from "eslint";
 import user from '../models/user';
 import parseErrors from '../utils/parseErrors';
 import sendCofirmationEmail from '../utils/mailer.js';
-
-const router = express.Router();
-// const user = require('../models/user');
+import bcyrpt from 'bcryptjs';
+import { generateJWT } from '../utils/helper.js';
 
 /* router.post("/", (req, res) => {
   const { email, password } = req.body.user;
@@ -22,25 +19,27 @@ const router = express.Router();
 }); */
 
 //Find all users
-router.get('/', function(req, res, next) {
-  user.findAll({
-          include: [{ all: true }]
-      })
-      .then(res.send.bind(res))
-      .catch(next);
-  });
+// router.get('/', function(req, res, next) {
+//   user
+//     .findAll({
+//       include: [{ all: true }],
+//     })
+//     .then(res.send.bind(res))
+//     .catch(next);
+// });
 
 //Create a new user
-router.post('/', function(req, res, next) {
-  user.create(req.body)
-     .then(function(user) {
-//       sendConfirmationEmail(userRecord);
-       res.send(user);
-     }) 
-  });
-//This is a catch all if the requested route does not exist.
-router.use('*', function(req, res, next) {
-  res.send('The requested USER route does not exist in this api.')
-});
-
-export default router;
+exports.signup = (req, res) => {
+  const { email, password } = req.body;
+  let userInDB;
+  user.findAll({ where: { email: email } }).then(res => (userInDB = res));
+  console.log('userInDB: ', userInDB);
+  if (userInDB) {
+    res.status(400).json({ error: 'User email already used' });
+  } else {
+    user.create({ email, passwordHash: password }).then(response => {
+      const token = generateJWT(response.email);
+      res.status(200).json({ token });
+    });
+  }
+};

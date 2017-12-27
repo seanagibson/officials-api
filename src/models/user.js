@@ -1,25 +1,23 @@
-import sequelize from "sequelize";
-import bcrypt from "bcryptjs";
-import uniqueValidator from "validator";
-import {generateJWT} from '../utils/helper.js';
+import sequelize from 'sequelize';
+import bcrypt from 'bcryptjs';
+import uniqueValidator from 'validator';
+import { generateJWT } from '../utils/helper.js';
 const db = require('../db');
 const saltRounds = 10;
 // TODO: add uniqueness and email validations to email field
 
-
-
 const User = db.define('user', {
-    email: {
-        type: sequelize.STRING,
-        unique: true,
-        allowNull: false,
-        primaryKey: true,
-        validate: {
-            len: {
-                args: [6,128],
-                msg: "Email address must be between 6 and 128 characters in legth"
-            },
-           /*  isUnique: function (value, next) {
+  email: {
+    type: sequelize.STRING,
+    unique: true,
+    allowNull: false,
+    primaryKey: true,
+    validate: {
+      len: {
+        args: [6, 128],
+        msg: 'Email address must be between 6 and 128 characters in legth',
+      },
+      /*  isUnique: function (value, next) {
                 var self = this;
                 User.find({where: {email: value}})
                     .then(function (user) {
@@ -34,9 +32,8 @@ const User = db.define('user', {
                         return next(err);
                     });
             } */
-        
 
-            /* isEmail: {
+      /* isEmail: {
                 msg: "Email address must be valid"
             },
             isUnique: function(value, next) {
@@ -57,35 +54,32 @@ const User = db.define('user', {
                         next();
                     });
             } */
-        }
     },
-    passwordHash: {
-        type: sequelize.STRING,
-        allowNull: false,
-        
-    },
-    confirmed: {
-        type: sequelize.BOOLEAN,
-        default: false,
-    },
-    confirmationToken: {
-        type: sequelize.STRING,
-        default: false,
-    }
- });
- 
-
-User.beforeCreate((user, options) => {
-    return bcrypt.hash(user.passwordHash, 10)
-        .then(hash => {
-            user.passwordHash = hash;
-        })
-        .catch(err => {
-            throw new Error();
-    });
+  },
+  passwordHash: {
+    type: sequelize.STRING,
+    allowNull: false,
+  },
+  confirmed: {
+    type: sequelize.BOOLEAN,
+    default: false,
+  },
+  confirmationToken: {
+    type: sequelize.STRING,
+    default: false,
+  },
 });
 
-
+User.beforeCreate((user, options) => {
+  return bcrypt
+    .hash(user.passwordHash, 10)
+    .then(hash => {
+      user.passwordHash = hash;
+    })
+    .catch(err => {
+      throw new Error();
+    });
+});
 
 // These are things I need to translate to NODE
 
