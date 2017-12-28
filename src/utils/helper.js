@@ -12,3 +12,12 @@ exports.generateJWT = function(email) {
     }
   );
 };
+
+exports.verifyJWT = token => {
+  jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+    if (error) {
+      return { status: 401 };
+    }
+    return { status: 200 };
+  });
+};

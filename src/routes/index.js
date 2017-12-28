@@ -1,5 +1,5 @@
 import { signup } from './users';
-import { login } from './auth';
+import { login, validateToken } from './auth';
 
 exports.routes = router => {
   //User routes
@@ -7,4 +7,5 @@ exports.routes = router => {
 
   //Auth routes
   router.post('/auth/login', login);
+  router.post('auth/validate_token', validateToken);
 };

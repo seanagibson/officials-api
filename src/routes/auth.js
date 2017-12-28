@@ -2,7 +2,7 @@ import express from 'express';
 import eslint from 'eslint';
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
-import { generateJWT } from '../utils/helper.js';
+import { generateJWT, verifyJWT } from '../utils/helper.js';
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
@@ -22,4 +22,10 @@ exports.login = (req, res) => {
       res.status(400).json({ errors: { global: 'Invalid User Credentials' } });
     }
   });
+};
+
+exports.validateToken = (req, res) => {
+  const { token } = req.body;
+  const { status } = verifyJWT(token);
+  res.status(status);
 };

@@ -29,13 +29,16 @@ import { generateJWT } from '../utils/helper.js';
 // });
 
 //Create a new user
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
   const { email, password } = req.body;
   let userInDB;
-  user.findAll({ where: { email: email } }).then(res => (userInDB = res));
-  console.log('userInDB: ', userInDB);
-  if (userInDB) {
-    res.status(400).json({ error: 'User email already used' });
+  try {
+    userInDB = await user.findAll({ where: { email: email } });
+  } catch (e) {
+    res.status(400).json({ errors: { global: 'Email already used' } });
+  }
+  if (userInDB.length !== 0) {
+    res.status(400).json({ errors: { global: 'Email already used' } });
   } else {
     user.create({ email, passwordHash: password }).then(response => {
       const token = generateJWT(response.email);
